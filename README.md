@@ -2,6 +2,8 @@
 
 **A daily feed of new job postings from the companies you actually want to work for.**
 
+🌐 **Website:** https://abaltimore.github.io/job-board-radar/ &nbsp;·&nbsp; MIT licensed &nbsp;·&nbsp; Python 3.9+, no dependencies
+
 Give it a list of target companies. Every day it checks their public job boards, keeps the roles that match your titles, level, location, and pay floor, and shows you **only the postings you haven't seen before**.
 
 - **Early:** companies post on their own boards before the job aggregators pick them up.
@@ -18,6 +20,16 @@ $ python job_board_radar.py
  "report": "data/new_jobs.md"
 }
 ```
+
+Each run writes a clickable table to `data/new_jobs.md`, for example:
+
+| Company | Title | Location | Pay ceiling | Link |
+|---|---|---|---|---|
+| Brex | Senior Product Manager, AI | Seattle, WA | $400,000 | apply |
+| Coinbase | Group Product Manager, Compliance Automation | Remote, USA | $286,900 | apply |
+| Airbnb | Senior Product Manager, Community Support | Remote, USA | $207,000 | apply |
+
+_Sample rows from a real run against the 15 example companies; roles and pay change daily._
 
 ## Quick start
 
