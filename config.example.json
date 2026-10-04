@@ -1,0 +1,14 @@
+{
+  "companies_csv": "companies.example.csv",
+  "data_dir": "data",
+
+  "title_include": ["\\bproduct manager\\b", "\\bproduct management\\b", "\\bhead of product\\b", "\\bproduct lead\\b"],
+  "title_level": ["\\bsenior\\b", "\\bsr\\.?\\b", "\\bstaff\\b", "\\bprincipal\\b", "\\bgroup\\b", "\\blead\\b", "\\bhead\\b", "\\bdirector\\b", "\\bai\\b"],
+  "title_exclude": ["\\bassociate\\b", "\\bintern\\b", "\\bproduct marketing\\b", "\\bprogram manager\\b", "\\bproduct designer\\b"],
+
+  "location": "US",
+  "pay_floor": 150000,
+
+  "exclude_companies": [],
+  "skip_boards": []
+}
