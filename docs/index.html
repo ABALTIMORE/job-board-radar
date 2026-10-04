@@ -3,66 +3,77 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>job-board-radar: new jobs from your target companies, daily</title>
-<meta name="description" content="A free, open-source tool that turns your list of target companies into a daily feed of new job postings from their public job boards. No API keys, no scraping.">
+<title>Job Board Radar</title>
+<meta name="description" content="Stop checking careers pages by hand. Job Board Radar watches the companies you want to work for and gives you a short list of their new jobs every morning. Free, and no coding needed.">
 <style>
   :root {
     --bg: #ffffff; --surface: #f8fafc; --text: #0f172a; --muted: #475569; --border: #e2e8f0;
-    --accent: #0f766e; --accent-soft: #ccfbf1; --ok: #15803d; --code-bg: #0f172a; --code-text: #e2e8f0;
+    --accent: #0f766e; --accent-soft: #ccfbf1; --ok: #15803d; --warn-bg: #fef9c3; --warn-text: #713f12;
+    --code-bg: #0f172a; --code-text: #e2e8f0;
   }
   @media (prefers-color-scheme: dark) {
     :root {
       --bg: #0f172a; --surface: #111c33; --text: #e2e8f0; --muted: #94a3b8; --border: #1e293b;
-      --accent: #2dd4bf; --accent-soft: #134e4a; --ok: #4ade80; --code-bg: #020617; --code-text: #e2e8f0;
+      --accent: #2dd4bf; --accent-soft: #134e4a; --ok: #4ade80; --warn-bg: #3f3a12; --warn-text: #fde68a;
+      --code-bg: #020617; --code-text: #e2e8f0;
     }
   }
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body { margin: 0; background: var(--bg); color: var(--text);
-    font: 16px/1.6 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+    font: 17px/1.65 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
   a { color: var(--accent); }
-  a:focus-visible, .btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 20px; }
+  a:focus-visible, .btn:focus-visible, summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 20px; }
   header.top { border-bottom: 1px solid var(--border); }
-  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+  header.top .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 12px; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; color: var(--text); text-decoration: none; }
   .dot { width: 14px; height: 14px; border-radius: 999px; background: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
-  .hero { padding: 72px 0 48px; }
-  .hero h1 { font-size: clamp(32px, 6vw, 48px); line-height: 1.1; margin: 0 0 16px; letter-spacing: -0.02em; }
-  .hero p.lede { font-size: 20px; color: var(--muted); max-width: 680px; margin: 0 0 28px; }
+  .hero { padding: 64px 0 44px; }
+  .hero h1 { font-size: clamp(32px, 6vw, 50px); line-height: 1.1; margin: 0 0 18px; letter-spacing: -0.02em; max-width: 820px; }
+  .hero p.lede { font-size: 20px; color: var(--muted); max-width: 700px; margin: 0 0 14px; }
+  .hero p.who { margin: 0 0 28px; font-weight: 600; }
   .actions { display: flex; flex-wrap: wrap; gap: 12px; }
-  .btn { display: inline-flex; align-items: center; min-height: 44px; padding: 0 18px; border-radius: 8px;
+  .btn { display: inline-flex; align-items: center; min-height: 48px; padding: 0 20px; border-radius: 8px;
     font-weight: 600; text-decoration: none; border: 1px solid var(--accent); transition: background .15s ease; }
   .btn.primary { background: var(--accent); color: var(--bg); }
   .btn.ghost { color: var(--accent); }
   .btn.ghost:hover { background: var(--accent-soft); }
-  .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; padding: 0; list-style: none; }
-  .pills li { background: var(--accent-soft); color: var(--text); border-radius: 999px; padding: 4px 12px; font-size: 14px; }
-  section { padding: 48px 0; border-top: 1px solid var(--border); }
-  h2 { font-size: 28px; margin: 0 0 8px; letter-spacing: -0.01em; }
-  .sub { color: var(--muted); margin: 0 0 28px; }
-  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 20px; }
-  .card h3 { margin: 0 0 6px; font-size: 18px; }
+  .btn.small { min-height: 40px; padding: 0 14px; font-size: 15px; }
+  section { padding: 52px 0; border-top: 1px solid var(--border); }
+  h2 { font-size: 30px; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .sub { color: var(--muted); margin: 0 0 28px; max-width: 700px; }
+  .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 22px; }
+  .card h3 { margin: 10px 0 6px; font-size: 19px; }
   .card p { margin: 0; color: var(--muted); }
-  .step { font-weight: 700; color: var(--accent); font-size: 14px; letter-spacing: .04em; }
-  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 8px; }
-  table { width: 100%; border-collapse: collapse; font-size: 15px; min-width: 560px; }
+  .num { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 999px;
+    background: var(--accent); color: var(--bg); font-weight: 700; }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 16px; min-width: 560px; }
   th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--border); }
-  th { background: var(--surface); font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  th { background: var(--surface); font-size: 14px; color: var(--muted); font-weight: 600; }
   tr:last-child td { border-bottom: 0; }
   .pay { color: var(--ok); font-weight: 600; white-space: nowrap; }
-  .caption { color: var(--muted); font-size: 14px; margin-top: 10px; }
-  pre { background: var(--code-bg); color: var(--code-text); border-radius: 8px; padding: 18px; overflow-x: auto;
-    font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; margin: 0; }
-  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
-  p code, li code { background: var(--surface); border: 1px solid var(--border); padding: 1px 6px; border-radius: 4px; font-size: 14px; }
-  ol.quick { padding-left: 20px; }
-  ol.quick li { margin-bottom: 18px; }
-  details { border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 10px; background: var(--surface); }
-  summary { cursor: pointer; font-weight: 600; min-height: 24px; }
-  details p { color: var(--muted); margin: 10px 0 0; }
-  footer { border-top: 1px solid var(--border); padding: 32px 0 48px; color: var(--muted); font-size: 14px; }
+  .caption { color: var(--muted); font-size: 15px; margin-top: 10px; }
+  ol.setup { list-style: none; padding: 0; margin: 0; counter-reset: s; }
+  ol.setup > li { counter-increment: s; position: relative; padding: 0 0 28px 52px; }
+  ol.setup > li::before { content: counter(s); position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 999px;
+    background: var(--accent); color: var(--bg); font-weight: 700; display: flex; align-items: center; justify-content: center; }
+  ol.setup h3 { margin: 2px 0 6px; font-size: 19px; }
+  ol.setup p { margin: 0 0 8px; }
+  ol.setup ul { margin: 6px 0 8px; padding-left: 20px; }
+  .ui { font-weight: 600; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0 6px; white-space: nowrap; }
+  .file { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 15px; }
+  .note { background: var(--warn-bg); color: var(--warn-text); border-radius: 10px; padding: 14px 18px; margin: 4px 0 0; }
+  .eg { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 14px; margin: 8px 0;
+    font: 15px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; white-space: pre-wrap; overflow-wrap: anywhere; }
+  pre { background: var(--code-bg); color: var(--code-text); border-radius: 8px; padding: 16px; overflow-x: auto;
+    font: 14px/1.6 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; margin: 8px 0 0; }
+  details { border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; background: var(--surface); }
+  summary { cursor: pointer; font-weight: 600; min-height: 28px; }
+  details p, details ol { color: var(--muted); margin: 10px 0 0; }
+  footer { border-top: 1px solid var(--border); padding: 32px 0 48px; color: var(--muted); font-size: 15px; }
   @media (max-width: 640px) {
     table { min-width: 0; }
     thead { display: none; }
@@ -70,113 +81,128 @@
     tr:last-child { border-bottom: 0; }
     td { display: block; border: 0; padding: 2px 0; }
     td:first-child { font-weight: 700; }
-    td:nth-child(3) { color: var(--muted); font-size: 14px; }
-    .hero { padding: 48px 0 32px; }
+    td:nth-child(3) { color: var(--muted); font-size: 15px; }
+    .hero { padding: 44px 0 32px; }
     .hero p.lede { font-size: 18px; }
-    section { padding: 36px 0; }
+    section { padding: 40px 0; }
+    ol.setup > li { padding-left: 46px; }
   }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
 <header class="top">
   <div class="wrap">
-    <a class="brand" href="#"><span class="dot" aria-hidden="true"></span>job-board-radar</a>
-    <a class="btn ghost" href="https://github.com/ABALTIMORE/job-board-radar">View on GitHub</a>
+    <a class="brand" href="#"><span class="dot" aria-hidden="true"></span>Job Board Radar</a>
+    <a class="btn ghost small" href="#set-up">Set it up</a>
   </div>
 </header>
 
 <main>
   <div class="wrap hero">
-    <h1>New jobs at your target companies, every morning.</h1>
-    <p class="lede">Give it your list of dream companies. It checks their public job boards daily and shows you <strong>only the postings you haven't seen yet</strong>, filtered to your role, level, location, and pay.</p>
+    <h1>Stop checking 20 careers pages every morning.</h1>
+    <p class="lede">Make a list of the companies you'd love to work for. Job Board Radar checks their careers pages every day and gives you a short list of <strong>new jobs that fit you</strong>, often before they show up on the big job sites.</p>
+    <p class="who">For job seekers who know where they want to work. Free, and no coding needed.</p>
     <div class="actions">
-      <a class="btn primary" href="#quick-start">Get started in 2 minutes</a>
-      <a class="btn ghost" href="https://github.com/ABALTIMORE/job-board-radar">Star on GitHub</a>
+      <a class="btn primary" href="#set-up">Set it up (about 10 minutes)</a>
+      <a class="btn ghost" href="#example">See an example</a>
     </div>
-    <ul class="pills" aria-label="Highlights">
-      <li>Free and open source (MIT)</li>
-      <li>No API keys or accounts</li>
-      <li>No LinkedIn scraping</li>
-      <li>Greenhouse · Lever · Ashby</li>
-    </ul>
   </div>
-
-  <section aria-labelledby="why">
-    <div class="wrap">
-      <h2 id="why">Why it helps</h2>
-      <p class="sub">The best roles go to people who apply early and apply on purpose.</p>
-      <div class="grid">
-        <div class="card"><h3>See roles first</h3><p>Companies post on their own boards before aggregators pick them up. Early applicants get read.</p></div>
-        <div class="card"><h3>Only what's new</h3><p>It remembers what you've seen, so each run is a short list, not a firehose.</p></div>
-        <div class="card"><h3>Your filters</h3><p>Titles, seniority, US or remote or anywhere, and a pay floor using posted salary ranges.</p></div>
-        <div class="card"><h3>Within the rules</h3><p>It reads the public endpoints companies publish for their careers pages. Nothing behind a login.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section aria-labelledby="sample">
-    <div class="wrap">
-      <h2 id="sample">What you get</h2>
-      <p class="sub">A clickable table in <code>data/new_jobs.md</code> after each run. Example output:</p>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th scope="col">Company</th><th scope="col">Title</th><th scope="col">Location</th><th scope="col">Pay ceiling</th><th scope="col">Link</th></tr></thead>
-          <tbody>
-            <tr><td>Brex</td><td>Senior Product Manager, AI</td><td>Seattle, WA</td><td class="pay">$400,000</td><td><a href="https://github.com/ABALTIMORE/job-board-radar#output">apply</a></td></tr>
-            <tr><td>Coinbase</td><td>Group Product Manager, Compliance Automation</td><td>Remote, USA</td><td class="pay">$286,900</td><td><a href="https://github.com/ABALTIMORE/job-board-radar#output">apply</a></td></tr>
-            <tr><td>Airbnb</td><td>Senior Product Manager, Community Support</td><td>Remote, USA</td><td class="pay">$207,000</td><td><a href="https://github.com/ABALTIMORE/job-board-radar#output">apply</a></td></tr>
-            <tr><td>Asana</td><td>Senior Product Manager, AI Studio</td><td>San Francisco, CA</td><td class="pay">$230,000</td><td><a href="https://github.com/ABALTIMORE/job-board-radar#output">apply</a></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="caption">Sample rows from a real run against the 15 example companies (roles and pay change daily).</p>
-    </div>
-  </section>
 
   <section aria-labelledby="how">
     <div class="wrap">
       <h2 id="how">How it works</h2>
-      <p class="sub">Four steps, a few seconds per run.</p>
+      <p class="sub">You tell it two things once. After that, it does the checking for you.</p>
       <div class="grid">
-        <div class="card"><div class="step">1 · FIND</div><h3>Locates each job board</h3><p>Tries likely names on Greenhouse, Lever, and Ashby, and checks the board belongs to that company.</p></div>
-        <div class="card"><div class="step">2 · FETCH</div><h3>Reads open roles</h3><p>From each board's public endpoint, including posted pay where available.</p></div>
-        <div class="card"><div class="step">3 · FILTER</div><h3>Keeps your matches</h3><p>Title, level, location, and pay floor, all from one config file.</p></div>
-        <div class="card"><div class="step">4 · REPORT</div><h3>Shows only new</h3><p>De-duplicated across runs and cities, with a backlog of everything found.</p></div>
+        <div class="card"><span class="num">1</span><h3>List your companies</h3><p>The places you'd actually want to work, like Stripe, Airbnb, or Figma.</p></div>
+        <div class="card"><span class="num">2</span><h3>Say what you're looking for</h3><p>Job titles, where you want to work, and the lowest salary you'd take.</p></div>
+        <div class="card"><span class="num">3</span><h3>Get new matches every morning</h3><p>Only jobs you haven't seen yet, each with a link to apply. You decide where to apply.</p></div>
       </div>
     </div>
   </section>
 
-  <section id="quick-start" aria-labelledby="qs">
+  <section id="example" aria-labelledby="sample">
     <div class="wrap">
-      <h2 id="qs">Quick start</h2>
-      <p class="sub">Python 3.9 or newer. No packages to install.</p>
-      <ol class="quick">
-        <li><strong>Get the code</strong>
-<pre><code>git clone https://github.com/ABALTIMORE/job-board-radar.git
-cd job-board-radar</code></pre></li>
-        <li><strong>List your companies</strong> in a CSV (<code>name</code>, <code>website</code>, optional <code>priority</code>). Start from <code>companies.example.csv</code>.</li>
-        <li><strong>Set your filters</strong> by copying <code>config.example.json</code> to <code>config.json</code>: titles, level, <code>"location": "US"</code>, <code>"pay_floor": 150000</code>.</li>
-        <li><strong>Run it</strong>, then open <code>data/new_jobs.md</code>.
-<pre><code>python job_board_radar.py</code></pre></li>
+      <h2 id="sample">What you get each morning</h2>
+      <p class="sub">A short list like this one. Yesterday's jobs don't come back, so it stays short.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Company</th><th scope="col">Job title</th><th scope="col">Location</th><th scope="col">Pay up to</th><th scope="col">Link</th></tr></thead>
+          <tbody>
+            <tr><td>Brex</td><td>Senior Product Manager, AI</td><td>Seattle, WA</td><td class="pay">$400,000</td><td><span class="ui">Apply</span></td></tr>
+            <tr><td>Coinbase</td><td>Group Product Manager, Compliance Automation</td><td>Remote, USA</td><td class="pay">$286,900</td><td><span class="ui">Apply</span></td></tr>
+            <tr><td>Airbnb</td><td>Senior Product Manager, Community Support</td><td>Remote, USA</td><td class="pay">$207,000</td><td><span class="ui">Apply</span></td></tr>
+            <tr><td>Asana</td><td>Senior Product Manager, AI Studio</td><td>San Francisco, CA</td><td class="pay">$230,000</td><td><span class="ui">Apply</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption">Example from a real run. Jobs and pay change every day. It works for any kind of job, not just product managers.</p>
+    </div>
+  </section>
+
+  <section id="set-up" aria-labelledby="setup">
+    <div class="wrap">
+      <h2 id="setup">Set it up in your web browser</h2>
+      <p class="sub">About 10 minutes, nothing to install. You'll need a free <a href="https://github.com/signup">GitHub account</a>. GitHub is the free website where this tool lives, and it will run your daily check for you.</p>
+      <ol class="setup">
+        <li>
+          <h3>Make your own copy</h3>
+          <p>Sign in to GitHub, open the <a href="https://github.com/ABALTIMORE/job-board-radar">Job Board Radar page</a>, and click <span class="ui">Fork</span> near the top right, then <span class="ui">Create fork</span>. You now have your own copy to change.</p>
+        </li>
+        <li>
+          <h3>Add your companies</h3>
+          <p>In your copy, click the file <span class="file">companies.example.csv</span>, then the pencil icon (<span class="ui">Edit</span>). Replace the list with your companies, one per line: the name, then the website. Keep the first line as it is.</p>
+          <div class="eg">name,website,priority
+Stripe,https://stripe.com,1
+Figma,https://www.figma.com,2</div>
+          <p>The number at the end is optional. Use 1 for your top choices so they show up first. Click <span class="ui">Commit changes</span> to save.</p>
+        </li>
+        <li>
+          <h3>Say what you're looking for</h3>
+          <p>Open <span class="file">config.example.json</span> the same way and change three things:</p>
+          <ul>
+            <li><strong>Job titles:</strong> the words in quotes after <span class="file">"title_include"</span>. For example, change <span class="file">"\\bproduct manager\\b"</span> to <span class="file">"designer"</span>. You can type plain words; the <span class="file">\\b</span> marks are optional.</li>
+            <li><strong>Where:</strong> <span class="file">"location"</span> can be <span class="file">"US"</span> (the US plus US remote) or <span class="file">"any"</span>.</li>
+            <li><strong>Lowest pay:</strong> <span class="file">"pay_floor"</span> is the lowest yearly salary you'd consider, like <span class="file">120000</span>. Jobs that don't list pay are kept, so you don't miss them.</li>
+          </ul>
+          <p>Keep the quotes and commas where they are, then click <span class="ui">Commit changes</span>.</p>
+        </li>
+        <li>
+          <h3>Turn on the daily check</h3>
+          <p>Click the <span class="ui">Actions</span> tab and then <span class="ui">I understand my workflows, go ahead and enable them</span>. To try it right now, click <span class="ui">daily radar</span> on the left, then <span class="ui">Run workflow</span>.</p>
+        </li>
+        <li>
+          <h3>Read your list</h3>
+          <p>In the <span class="ui">Actions</span> tab, click the newest run. Your new jobs appear on that page with links to apply. It runs on its own every morning (around 7 to 8am Eastern), so check back each day.</p>
+        </li>
       </ol>
-      <p>Want it to run every morning without your laptop? Use the included GitHub Actions workflow. See the <a href="https://github.com/ABALTIMORE/job-board-radar#run-it-daily-for-free-optional">README</a>.</p>
+      <p class="note"><strong>Good to know:</strong> your copy is public, so anyone could see your company list and job titles. Don't put anything private in it, like your current employer's name.</p>
     </div>
   </section>
 
   <section aria-labelledby="faq">
     <div class="wrap">
       <h2 id="faq">Questions</h2>
-      <details><summary>Is it only for product managers?</summary><p>No. Change the title patterns in <code>config.json</code> for engineering, design, data, sales, or anything else.</p></details>
-      <details><summary>Which companies does it cover?</summary><p>Any company whose careers page runs on Greenhouse, Lever, or Ashby (many tech companies do). Companies on Workday or custom sites aren't found automatically yet.</p></details>
-      <details><summary>Does it apply for me?</summary><p>No. It finds roles; you decide where to apply and submit yourself.</p></details>
-      <details><summary>Is my data shared anywhere?</summary><p>No. It runs on your machine (or your own GitHub fork) and writes results to a local <code>data/</code> folder that is never committed.</p></details>
+      <details><summary>Does it cost anything?</summary><p>No. It's free, and so is the GitHub account. There are no subscriptions or AI fees.</p></details>
+      <details><summary>Does it apply to jobs for me?</summary><p>No. It finds new jobs and gives you the links. You decide where to apply, and you apply yourself.</p></details>
+      <details><summary>Will it work for my companies?</summary><p>It works for most tech companies and many others: any company whose careers page runs on Greenhouse, Lever, or Ashby, three popular hiring systems. A quick check: open a job on the company's careers page. If the link mentions greenhouse, lever, or ashby, it will work. Companies using other systems (like Workday) aren't covered yet, so check those by hand.</p></details>
+      <details><summary>Is this allowed?</summary><p>Yes. It reads the same public job listings that each company shows on its own careers page. It doesn't log in anywhere or copy anything from LinkedIn or Indeed. Please don't run it more than a few times a day.</p></details>
+      <details><summary>I'm comfortable with the command line. Can I run it on my own computer?</summary>
+        <ol>
+          <li>Install Python 3.9 or newer. Nothing else is needed.</li>
+          <li>Download the code:<pre><code>git clone https://github.com/ABALTIMORE/job-board-radar.git
+cd job-board-radar</code></pre></li>
+          <li>Edit <code>companies.example.csv</code> and <code>config.example.json</code> as in steps 2 and 3 above.</li>
+          <li>Run it, then open <code>data/new_jobs.md</code>:<pre><code>python job_board_radar.py</code></pre></li>
+        </ol>
+        <p>More options are in the <a href="https://github.com/ABALTIMORE/job-board-radar#settings-in-detail">README</a>.</p>
+      </details>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap">MIT licensed · <a href="https://github.com/ABALTIMORE/job-board-radar">github.com/ABALTIMORE/job-board-radar</a> · Please run it at most a few times a day, out of courtesy to the job-board providers.</div>
+  <div class="wrap">Free and open source (MIT license) · <a href="https://github.com/ABALTIMORE/job-board-radar">See the code on GitHub</a></div>
 </footer>
 </body>
 </html>

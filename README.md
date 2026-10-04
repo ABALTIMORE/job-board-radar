@@ -1,76 +1,81 @@
-# job-board-radar
+# Job Board Radar
 
-**A daily feed of new job postings from the companies you actually want to work for.**
+**Stop checking 20 careers pages every morning.**
 
-🌐 **Website:** https://abaltimore.github.io/job-board-radar/ &nbsp;·&nbsp; MIT licensed &nbsp;·&nbsp; Python 3.9+, no dependencies
+Make a list of the companies you'd love to work for. Job Board Radar checks their careers pages every day and gives you a short list of **new jobs that fit you**, often before they show up on the big job sites. Free, and no coding needed.
 
-Give it a list of target companies. Every day it checks their public job boards, keeps the roles that match your titles, level, location, and pay floor, and shows you **only the postings you haven't seen before**.
+🌐 **Website with the full walkthrough:** https://abaltimore.github.io/job-board-radar/
 
-- **Early:** companies post on their own boards before the job aggregators pick them up.
-- **Free:** Python standard library only. No accounts, API keys, or AI costs.
-- **Within the rules:** it reads the public job-board endpoints companies publish through Greenhouse, Lever, and Ashby so their jobs can be shown. No LinkedIn or Indeed scraping.
+Each morning you get a short list like this, with a link to apply to each job:
 
-```
-$ python job_board_radar.py
-{
- "companies": 15,
- "on_public_boards": 15,
- "matching_open_roles": 96,
- "new_today": 75,
- "report": "data/new_jobs.md"
-}
-```
+| Company | Job title | Location | Pay up to |
+|---|---|---|---|
+| Brex | Senior Product Manager, AI | Seattle, WA | $400,000 |
+| Coinbase | Group Product Manager, Compliance Automation | Remote, USA | $286,900 |
+| Airbnb | Senior Product Manager, Community Support | Remote, USA | $207,000 |
 
-Each run writes a clickable table to `data/new_jobs.md`, for example:
+_Example from a real run. Jobs and pay change daily. It works for any kind of job, not just product managers._
 
-| Company | Title | Location | Pay ceiling | Link |
-|---|---|---|---|---|
-| Brex | Senior Product Manager, AI | Seattle, WA | $400,000 | apply |
-| Coinbase | Group Product Manager, Compliance Automation | Remote, USA | $286,900 | apply |
-| Airbnb | Senior Product Manager, Community Support | Remote, USA | $207,000 | apply |
+## Start here: set it up in your browser (about 10 minutes)
 
-_Sample rows from a real run against the 15 example companies; roles and pay change daily._
+You need a free [GitHub account](https://github.com/signup). Nothing to install.
 
-## Quick start
-
-1. **Get the code** (Python 3.9+):
-   ```bash
-   git clone https://github.com/ABALTIMORE/job-board-radar.git
-   cd job-board-radar
-   ```
-2. **Add your companies.** Copy `companies.example.csv` to `companies.csv` and list your targets:
+1. **Make your own copy.** Click **Fork** (top right of this page), then **Create fork**.
+2. **Add your companies.** In your copy, open `companies.example.csv`, click the pencil icon, and replace the list with your companies, one per line: name, website, and an optional priority (1 = top choice). Keep the first line. Click **Commit changes**.
    ```csv
    name,website,priority
    Stripe,https://stripe.com,1
    Figma,https://www.figma.com,2
    ```
-   `priority` is optional and sorts the report (1 first).
-3. **Set your filters.** Copy `config.example.json` to `config.json` and edit it (see below). Point `companies_csv` at your file.
-4. **Run it:**
-   ```bash
-   python job_board_radar.py
-   ```
-   Open `data/new_jobs.md` for a clickable table of today's new roles.
+3. **Say what you're looking for.** Open `config.example.json` the same way and change:
+   - **Job titles** in `"title_include"`, e.g. change `"\\bproduct manager\\b"` to `"designer"`. Plain words work.
+   - **Where:** `"location"` is `"US"` (US plus US remote) or `"any"`.
+   - **Lowest pay:** `"pay_floor"`, the lowest yearly salary you'd consider. Jobs that don't list pay are kept.
 
-Run it again tomorrow and you'll only see what's new.
+   Keep the quotes and commas, then click **Commit changes**.
+4. **Turn on the daily check.** Open the **Actions** tab and click **I understand my workflows, go ahead and enable them**. To try it now: click **daily radar**, then **Run workflow**.
+5. **Read your list.** In **Actions**, click the newest run. Your new jobs are right on that page. It runs again every morning, around 7 to 8am Eastern, and only shows jobs you haven't seen.
 
-## Configuration
+> **Good to know:** your copy is public, so anyone could see your company list and job titles. Don't put anything private in it, like your current employer's name.
+
+## Common questions
+
+- **Does it cost anything?** No. No subscriptions, no AI fees.
+- **Does it apply for me?** No. It finds new jobs; you choose and apply yourself.
+- **Will it work for my companies?** For any company whose careers page runs on Greenhouse, Lever, or Ashby (popular hiring systems used by most tech companies). Open a job on their careers page: if the link mentions greenhouse, lever, or ashby, it works. Companies on Workday or custom sites aren't covered yet.
+- **Is this allowed?** Yes. It reads the same public listings each company shows on its own careers page. No logins, no LinkedIn or Indeed scraping. Please don't run it more than a few times a day.
+
+---
+
+## For developers
+
+### Run it on your own computer
+
+Python 3.9 or newer, standard library only.
+
+```bash
+git clone https://github.com/ABALTIMORE/job-board-radar.git
+cd job-board-radar
+python job_board_radar.py
+```
+
+It uses `config.json` if present, otherwise `config.example.json`. Open `data/new_jobs.md` for the results. Run it again tomorrow and you'll only see what's new.
+
+### Settings in detail
 
 | Key | What it does | Example |
 |---|---|---|
 | `companies_csv` | Your company list (`name`, `website`, optional `priority`) | `"companies.csv"` |
-| `title_include` | Regexes; a title must match one | `["\\bproduct manager\\b"]` |
-| `title_level` | Regexes; a title must also match one (leave empty to skip) | `["\\bsenior\\b", "\\bstaff\\b"]` |
-| `title_exclude` | Regexes; drop titles matching any | `["\\bintern\\b"]` |
+| `title_include` | Patterns (case-insensitive regex); a title must match one | `["\\bproduct manager\\b"]` |
+| `title_level` | A title must also match one of these (leave empty to skip) | `["\\bsenior\\b", "\\bstaff\\b"]` |
+| `title_exclude` | Drop titles matching any | `["\\bintern\\b"]` |
 | `location` | `"any"`, `"US"` (US plus US-remote, using built-in place matching), or your own regex | `"(new york\|remote)"` |
 | `pay_floor` | Drop roles whose **posted** pay ceiling is below this. Roles with no posted pay are kept | `150000` |
 | `exclude_companies` | Names to always skip (e.g. your current employer) | `["Acme"]` |
 | `skip_boards` | Companies whose auto-detected board turned out to be wrong | `["Acme"]` |
 | `data_dir` | Where results and state are written | `"data"` |
 
-It works for any role, not just PMs: change the title patterns to fit engineering, design, data, and so on.
-
-## Output
+### Output
 
 Everything goes in `data/` (git-ignored):
 
@@ -82,23 +87,18 @@ Everything goes in `data/` (git-ignored):
 | `seen.json` | Posting IDs already reported |
 | `boards.json` | Each company's detected job board (cached; refresh with `--rediscover`) |
 
-## How it works
+### How it works
 
 1. **Find each company's board.** It tries likely names (from the website and company name) on Greenhouse, Lever, and Ashby. Greenhouse matches are checked against the board's company name, to avoid a namesake's board.
 2. **Fetch open roles** from each board's public endpoint.
 3. **Filter** by title, level, location, and posted pay.
 4. **Report only what's new.** It de-duplicates across runs and within a run (the same title posted in several cities appears once).
 
-Companies that use other systems (Workday, custom career sites) won't be found automatically. Check those by hand, or add support in a pull request.
+### The daily GitHub run
 
-## Run it daily for free (optional)
+`.github/workflows/daily.yml` runs every day at 12:00 UTC (and on demand), shows `new_jobs.md` on the run's summary page, attaches it as an artifact, and caches `data/` so each run reports only new roles. GitHub Actions is free for public repos.
 
-`.github/workflows/daily.yml` runs the radar every morning on GitHub Actions, which is free for public repos, and attaches `new_jobs.md` to each run. To use it:
-1. Fork this repo.
-2. Commit your own `config.json` and company CSV. Note: on a public fork these are visible to anyone.
-3. Turn on Actions in your fork.
-
-## Be a good citizen
+### Be a good citizen
 
 It makes one request per company per run, with a small thread pool. Please don't run it more than a few times a day. These endpoints are public courtesies from the job-board providers.
 
